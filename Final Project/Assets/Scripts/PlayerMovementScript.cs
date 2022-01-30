@@ -5,17 +5,19 @@ using System.Collections.Generic;
 public class PlayerMovementScript : MonoBehaviour
 {
   Rigidbody rb;
-  public float currentSpeed;
-  [HideInInspector] public Transform cameraMain;
-  public float jumpForce = 750;
-  [HideInInspector] public Vector3 cameraPosition;
+  public float currentSpeed = 100.0f;
+  private Transform cameraMain;
+  private float jumpForce = 20000;
+  public Vector3 cameraPosition;
 
-  //Getting the Players rigidbody component.
-  //And grabbing the mainCamera from Players child transform.
+  //Getting the Players rigidbody component
+  //And grabbing the mainCamera from Players child transform
   void Awake()
   {
     rb = GetComponent<Rigidbody>();
     cameraMain = transform.Find("Main Camera").transform;
+    bulletSpawn = cameraMain.Find("BulletSpawn").transform;
+    ignoreLayer = 1 << LayerMask.NameToLayer("Player");
 
   }
   private Vector3 slowdownV;
@@ -27,7 +29,7 @@ public class PlayerMovementScript : MonoBehaviour
     PlayerMovementLogic();
   }
 
-  //Accordingly to input adds force and if magnitude is bigger it will clamp it.
+  //Accordingly to input adds force and if magnitude is bigger it will clamp it
   //If player leaves keys it will deaccelerate
   void PlayerMovementLogic()
   {
@@ -61,7 +63,7 @@ public class PlayerMovementScript : MonoBehaviour
 
     }
 
-    //Avoiding the slippery
+    //Slippery issues fixed here
     if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
     {
       deaccelerationSpeed = 0.5f;
@@ -72,22 +74,93 @@ public class PlayerMovementScript : MonoBehaviour
     }
   }
 
-  //Handles jumping and ads the force
+  //Handles jumping and ads the force and sounds
   void Jumping()
   {
     if (Input.GetKeyDown(KeyCode.Space) && grounded)
     {
       rb.AddRelativeForce(Vector3.up * jumpForce);
+      if (_jumpSound)
+        _jumpSound.Play();
+      else
+        print("Missig jump sound.");
+      _walkSound.Stop();
+      _runSound.Stop();
     }
   }
 
+  //Update loop calling other stuff
   void Update()
   {
     Jumping();
     Crouching();
+    WalkingSound();
   }
 
-  //If player toggle the crouch it will scale the player to appear that is crouching
+  //Checks if player is grounded and plays the sound accorindlgy to his speed
+  void WalkingSound()
+  {
+    if (_walkSound && _runSound)
+    {
+      if (RayCastGrounded())
+      {
+        if (currentSpeed > 1)
+        {
+          if (maxSpeed == 3)
+          {
+            if (!_walkSound.isPlaying)
+            {
+              _walkSound.Play();
+              _runSound.Stop();
+            }
+          }
+          else if (maxSpeed == 5)
+          {
+            if (!_runSound.isPlaying)
+            {
+              _walkSound.Stop();
+              _runSound.Play();
+            }
+          }
+        }
+        else
+        {
+          _walkSound.Stop();
+          _runSound.Stop();
+        }
+      }
+      else
+      {
+        _walkSound.Stop();
+        _runSound.Stop();
+      }
+    }
+    else
+    {
+      print("Missing walk and running sounds.");
+    }
+  }
+
+  //Raycasts down to check if we are grounded along the gorunded method()
+  private bool RayCastGrounded()
+  {
+    RaycastHit groundedInfo;
+    if (Physics.Raycast(transform.position, transform.up * -1f, out groundedInfo, 1, ~ignoreLayer))
+    {
+      Debug.DrawRay(transform.position, transform.up * -1f, Color.red, 0.0f);
+      if (groundedInfo.transform != null)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  //Crouching method
   void Crouching()
   {
     if (Input.GetKey(KeyCode.C))
@@ -101,12 +174,12 @@ public class PlayerMovementScript : MonoBehaviour
     }
   }
 
-  public int maxSpeed = 5;
-  public float deaccelerationSpeed = 15.0f;
-  public float accelerationSpeed = 50000.0f;
-  public bool grounded;
+  public int maxSpeed = 100;
+  private float deaccelerationSpeed = 15.0f;
+  private float accelerationSpeed = 100000.0f;
+  private bool grounded;
 
-  //Checks if our player is contacting the ground in the angle less than 60 degrees if it is, set grounded to true
+  //Checking if the player is contacting the ground
   void OnCollisionStay(Collision other)
   {
     foreach (ContactPoint contact in other.contacts)
@@ -124,4 +197,12 @@ public class PlayerMovementScript : MonoBehaviour
     grounded = false;
   }
 
+  //to ignore player layer
+  private LayerMask ignoreLayer;
+  private Transform bulletSpawn;
+  public AudioSource _jumpSound;
+  public AudioSource _freakingZombiesSound;
+  public AudioSource _hitSound;
+  public AudioSource _walkSound;
+  public AudioSource _runSound;
 }
