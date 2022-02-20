@@ -284,6 +284,19 @@ public class GunScript : MonoBehaviour
   //Creates bullets of the weapon, calls for flashes and recoil
   private void ShootMethod()
   {
+    RaycastHit hit;
+
+    if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out hit, 100000))
+    {
+      TargetX target = hit.transform.GetComponent<TargetX>();
+      if (target != null)
+      {
+        UnityEngine.Debug.Log(hit.transform.name);
+        target.takeDamage(5);
+      }
+
+    }
+
     if (waitTillNextFire <= 0 && !reloading && pmS.maxSpeed < 5)
     {
       if (bulletsInTheGun > 0)
