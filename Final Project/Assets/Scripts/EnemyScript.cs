@@ -6,7 +6,6 @@ using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour
 {
-
     public NavMeshAgent enemy;
     public Transform player;
     private Animator anim;
@@ -20,7 +19,6 @@ public class EnemyScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(enemy.SetDestination(player.position));
         enemy.SetDestination(player.position);
     }
 
@@ -28,13 +26,13 @@ public class EnemyScript : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            Debug.Log(collision.gameObject.tag);
-            anim.Play("Z_Attack");
+            anim.SetTrigger("canAttack");
         }
-        else
-        {   
-            anim.Play("Z_Walk_InPlace");
-        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        anim.SetTrigger("walk");
     }
 
 }

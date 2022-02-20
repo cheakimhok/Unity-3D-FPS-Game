@@ -23,7 +23,7 @@ public class AttackBehaviour : StateMachineBehaviour
             lastAttackTime = Time.time;
             GameObject player;
             player = GameObject.FindGameObjectWithTag("Player");
-            player.GetComponent<PlayerHealth>().takeDamage(2);
+            player.GetComponent<PlayerHealth>().takeDamage(15);
         }
     }
 

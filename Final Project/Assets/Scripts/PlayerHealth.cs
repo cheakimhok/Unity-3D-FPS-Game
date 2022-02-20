@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -27,5 +28,11 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth -= damage;
         healthBar.setHealth(currentHealth);
+
+        //If player's health equals to zero, GAME OVER
+        if(currentHealth < 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
     }
 }
