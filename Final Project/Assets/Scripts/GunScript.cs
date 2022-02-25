@@ -344,6 +344,7 @@ public class GunScript : MonoBehaviour
       handsAnimator.SetBool("reloading", false);
 
       yield return new WaitForSeconds(reloadChangeBulletsTime - 0.5f);
+      
       if (player.GetComponent<PlayerMovementScript>()._freakingZombiesSound)
         player.GetComponent<PlayerMovementScript>()._freakingZombiesSound.Play();
       else

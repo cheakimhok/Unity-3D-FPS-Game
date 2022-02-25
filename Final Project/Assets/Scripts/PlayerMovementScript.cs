@@ -202,7 +202,6 @@ public class PlayerMovementScript : MonoBehaviour
   private Transform bulletSpawn;
   public AudioSource _jumpSound;
   public AudioSource _freakingZombiesSound;
-  public AudioSource _hitSound;
   public AudioSource _walkSound;
   public AudioSource _runSound;
 }

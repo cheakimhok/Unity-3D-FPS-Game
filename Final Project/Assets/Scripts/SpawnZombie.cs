@@ -17,15 +17,15 @@ public class SpawnZombie : MonoBehaviour
 
     IEnumerator ZombieSpawn()
     {
-        while(zombieCount < 3)
+        while(zombieCount < 15)
         {
-            xPos = Random.Range(1, 30);
-            zPos = Random.Range(1, 3);
+            // xPos = Random.Range(1, 50);
+            // zPos = Random.Range(1, 7);
+            xPos = Random.Range(1, 60);
+            zPos = Random.Range(1, 7);
             Instantiate(theZombie, new Vector3(xPos, 0, zPos), Quaternion.identity);
             yield return new WaitForSeconds(0.5f);
             zombieCount += 1;
         }
-
-        
     }
 }

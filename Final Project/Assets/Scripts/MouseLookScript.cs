@@ -9,6 +9,7 @@ public class MouseLookScript : MonoBehaviour
   void Awake()
   {
     myCamera = GameObject.FindGameObjectWithTag("MainCamera").transform;
+    Cursor.lockState = CursorLockMode.Locked;
   }
 
   //Locking the mouse if pressing L.
@@ -16,10 +17,10 @@ public class MouseLookScript : MonoBehaviour
   {
     MouseInputMovement();
 
-    // if (Input.GetKeyDown(KeyCode.L))
-    // {
-    //   Cursor.lockState = CursorLockMode.Locked;
-    // }
+    if (Input.GetKeyDown(KeyCode.L))
+    {
+      Cursor.lockState = CursorLockMode.Locked;
+    }
     deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
 
     if (GetComponent<PlayerMovementScript>().currentSpeed > 1)

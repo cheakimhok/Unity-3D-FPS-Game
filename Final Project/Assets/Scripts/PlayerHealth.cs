@@ -33,6 +33,8 @@ public class PlayerHealth : MonoBehaviour
         if(currentHealth < 0)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 }
